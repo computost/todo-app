@@ -14,7 +14,7 @@ public class ToDosController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create(CreateToDo createToDo)
+    public async Task<IActionResult> Create(CreateToDo createToDo, CancellationToken cancellationToken)
     {
         var toDo = new Entities.ToDo
         {
@@ -22,8 +22,8 @@ public class ToDosController : ControllerBase
             IsDone = false
         };
 
-        _toDosContext.ToDos.Add(toDo);
-        _toDosContext.SaveChanges();
+        await _toDosContext.ToDos.AddAsync(toDo, cancellationToken);
+        await _toDosContext.SaveChangesAsync(cancellationToken);
 
         Debug.Assert(toDo.Id is not null);
 
