@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ToDoApp.Web;
+namespace ToDoApp.Domain;
 
-public class ToDosContext: DbContext
+public class ToDosContext : DbContext
 {
     public DbSet<Entities.ToDo> ToDos { get; set; } = null!;
-    public ToDosContext(DbContextOptions<ToDosContext> options): base(options)
+    public ToDosContext(DbContextOptions<ToDosContext> options) : base(options)
     {
-        
+
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace ToDoApp.Web.Entities;
+﻿namespace ToDoApp.Domain.Entities;
 
 public class ToDo
 {

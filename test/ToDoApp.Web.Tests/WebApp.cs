@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
+using ToDoApp.Domain;
 
 namespace ToDoApp.Web.Tests;
 
@@ -46,7 +47,7 @@ public class WebApp : IAsyncLifetime
     public async Task CreateToDo(string name)
     {
         // Act
-        var response = await _client.PostAsJsonAsync("todos", new CreateToDo(name));
+        var response = await _client.PostAsJsonAsync("todos", name);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -54,7 +55,7 @@ public class WebApp : IAsyncLifetime
         _dbContext
             .ToDos.Should().ContainEquivalentOf(toDo)
             .Which.Should().BeEquivalentTo(
-                new Entities.ToDo
+                new Domain.Entities.ToDo
                 {
                     Name = name,
                     IsDone = false

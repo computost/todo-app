@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using ToDoApp.Domain;
 
 namespace ToDoApp.Web.Controllers;
 
@@ -14,11 +15,14 @@ public class ToDosController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(CreateToDo createToDo, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create(
+        [FromBody] string name,
+        CancellationToken cancellationToken
+    )
     {
-        var toDo = new Entities.ToDo
+        var toDo = new Domain.Entities.ToDo
         {
-            Name = createToDo.Name,
+            Name = name,
             IsDone = false
         };
 
