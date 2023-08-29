@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace ToDoApp.Web.Controllers;
 
@@ -11,16 +12,24 @@ public class ToDosController : ControllerBase
     {
         _toDosContext = toDosContext;
     }
-    
+
     [HttpPost]
     public IActionResult Create(CreateToDo createToDo)
     {
-        _toDosContext.ToDos.Add(new Entities.ToDo
+        var toDo = new Entities.ToDo
         {
             Name = createToDo.Name,
             IsDone = false
-        });
+        };
+
+        _toDosContext.ToDos.Add(toDo);
         _toDosContext.SaveChanges();
-        return Created(string.Empty, new ToDo(1, createToDo.Name, false));
+
+        Debug.Assert(toDo.Id is not null);
+
+        return Created(
+            string.Empty,
+            new ToDo(toDo.Id.Value, toDo.Name, toDo.IsDone)
+        );
     }
 }
