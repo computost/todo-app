@@ -12,7 +12,6 @@ public class WebApp : IAsyncLifetime, IClassFixture<DatabaseFixture>
 {
     private readonly DatabaseFixture _databaseFixture;
     private WebApplicationFactory<Program> _factory = null!;
-    private ToDosContext _dbContext = null!;
     private HttpClient _client = null!;
 
     #region set up and tear down
@@ -26,17 +25,8 @@ public class WebApp : IAsyncLifetime, IClassFixture<DatabaseFixture>
     {
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
-                builder.ConfigureServices(services =>
-                    services.AddDbContext<ToDosContext>(
-                        options => options.UseSqlServer(
-                            _databaseFixture.MsSqlContainer.GetConnectionString()
-                        ),
-                        ServiceLifetime.Singleton
-                    )
-                )
+                builder.UseSetting("ConnectionStrings::Sql", _databaseFixture.MsSqlContainer.GetConnectionString())
             );
-        _dbContext = _factory.Services.GetRequiredService<ToDosContext>();
-        await _dbContext.Database.EnsureCreatedAsync();
         _client = _factory.CreateClient();
     }
 
@@ -57,9 +47,9 @@ public class WebApp : IAsyncLifetime, IClassFixture<DatabaseFixture>
         var response = await _client.PostAsJsonAsync("todos", name);
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.Created);
+        response.Should().Be201Created();
         var toDo = await response.Content.ReadFromJsonAsync<ToDo>();
-        _dbContext
+        _databaseFixture.ToDosContext
             .ToDos.Should().ContainEquivalentOf(toDo)
             .Which.Should().BeEquivalentTo(
                 new Domain.Entities.ToDo
