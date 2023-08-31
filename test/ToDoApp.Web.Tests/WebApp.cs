@@ -8,29 +8,36 @@ using ToDoApp.Domain;
 
 namespace ToDoApp.Web.Tests;
 
-public class WebApp : IAsyncLifetime
+public class WebApp : IAsyncLifetime, IClassFixture<DatabaseFixture>
 {
+    private readonly DatabaseFixture _databaseFixture;
     private WebApplicationFactory<Program> _factory = null!;
     private ToDosContext _dbContext = null!;
     private HttpClient _client = null!;
 
     #region set up and tear down
 
-    public Task InitializeAsync()
+    public WebApp(DatabaseFixture databaseFixture)
+    {
+        _databaseFixture = databaseFixture;
+    }
+
+    public async Task InitializeAsync()
     {
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
                 builder.ConfigureServices(services =>
                     services.AddDbContext<ToDosContext>(
-                        options => options.UseInMemoryDatabase("ToDoControllerTest"),
+                        options => options.UseSqlServer(
+                            _databaseFixture.MsSqlContainer.GetConnectionString()
+                        ),
                         ServiceLifetime.Singleton
                     )
                 )
             );
         _dbContext = _factory.Services.GetRequiredService<ToDosContext>();
+        await _dbContext.Database.EnsureCreatedAsync();
         _client = _factory.CreateClient();
-
-        return Task.CompletedTask;
     }
 
     public async Task DisposeAsync()

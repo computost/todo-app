@@ -1,8 +1,10 @@
-﻿namespace ToDoApp.Domain.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ToDoApp.Domain.Entities;
 
 public class ToDo
 {
-    public int? Id { get; set; }
+    public  int? Id { get; [ExcludeFromCodeCoverage] set; }
 
     public required string Name { get; set; }
 
