@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ToDoApp.Domain;
+namespace ToDoApp.Application;
 
 public class ToDosContext : DbContext
 {
-    public DbSet<Entities.ToDo> ToDos { get; set; } = null!;
+    public DbSet<Domain.Entities.ToDo> ToDos { get; set; } = null!;
     public ToDosContext(DbContextOptions<ToDosContext> options) : base(options)
     {
 

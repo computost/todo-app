@@ -1,7 +1,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.MsSql;
-using ToDoApp.Domain;
+using ToDoApp.Application;
 
 namespace ToDoApp.Web.Tests;
 

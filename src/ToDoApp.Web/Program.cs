@@ -1,15 +1,14 @@
 using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
-using ToDoApp.Domain;
+using ToDoApp.Application;
+using ToDoApp.Infrastructure;
 
 [assembly:InternalsVisibleTo("ToDoApp.Web.Tests")]
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddDbContext<ToDosContext>(options =>
-    options.UseSqlServer("name=ConnectionStrings::Sql")
-);
+builder.Services.AddInfrastructure();
+builder.Services.AddApplication();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

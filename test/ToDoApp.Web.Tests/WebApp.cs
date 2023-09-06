@@ -1,10 +1,7 @@
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 using System.Net.Http.Json;
-using ToDoApp.Domain;
+using ToDoApp.Application;
 
 namespace ToDoApp.Web.Tests;
 
@@ -52,12 +49,11 @@ public class WebApp : IAsyncLifetime, IClassFixture<DatabaseFixture>
         _databaseFixture.ToDosContext
             .ToDos.Should().ContainEquivalentOf(toDo)
             .Which.Should().BeEquivalentTo(
-                new Domain.Entities.ToDo
+                new
                 {
                     Name = name,
                     IsDone = false
-                },
-                options => options.Excluding(toDo => toDo.Id)
+                }
             );
     }
 }

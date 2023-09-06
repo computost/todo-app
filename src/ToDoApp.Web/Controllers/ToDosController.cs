@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using ToDoApp.Application;
 using ToDoApp.Domain;
 
 namespace ToDoApp.Web.Controllers;
@@ -8,10 +9,10 @@ namespace ToDoApp.Web.Controllers;
 [Route("todos")]
 public class ToDosController : ControllerBase
 {
-    private readonly ToDosContext _toDosContext;
-    public ToDosController(ToDosContext toDosContext)
+    private readonly ToDoService _toDoService;
+    public ToDosController(ToDoService toDoService)
     {
-        _toDosContext = toDosContext;
+        _toDoService = toDoService;
     }
 
     [HttpPost]
@@ -20,20 +21,7 @@ public class ToDosController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var toDo = new Domain.Entities.ToDo
-        {
-            Name = name,
-            IsDone = false
-        };
-
-        await _toDosContext.ToDos.AddAsync(toDo, cancellationToken);
-        await _toDosContext.SaveChangesAsync(cancellationToken);
-
-        Debug.Assert(toDo.Id is not null);
-
-        return Created(
-            string.Empty,
-            new ToDo(toDo.Id.Value, toDo.Name, toDo.IsDone)
-        );
+        var todo = await _toDoService.CreateToDo(name, cancellationToken);
+        return Created(string.Empty, todo);
     }
 }
