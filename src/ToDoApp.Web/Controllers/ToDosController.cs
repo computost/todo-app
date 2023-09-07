@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 using ToDoApp.Application;
-using ToDoApp.Domain;
 
 namespace ToDoApp.Web.Controllers;
 
@@ -21,7 +19,13 @@ public class ToDosController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var todo = await _toDoService.CreateToDo(name, cancellationToken);
+        var todo = await _toDoService.Create(name, cancellationToken);
         return Created(string.Empty, todo);
     }
+
+    [HttpPost, Route("{id}/complete")]
+    public async Task<IActionResult> Complete(
+        int id,
+        CancellationToken cancellationToken
+    ) => Ok(await _toDoService.Complete(id, cancellationToken));
 }

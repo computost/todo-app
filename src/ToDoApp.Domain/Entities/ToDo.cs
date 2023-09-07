@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace ToDoApp.Domain.Entities;
+﻿namespace ToDoApp.Domain.Entities;
 
 public class ToDo
 {
@@ -9,9 +7,10 @@ public class ToDo
         Name = name;
         IsDone = false;
     }
-    public  int? Id { get; [ExcludeFromCodeCoverage] set; }
 
+    public int? Id { get; private set; }
     public string Name { get; private set; }
-
     public bool IsDone { get; private set; }
+
+    public void Complete() => IsDone = true;
 }
