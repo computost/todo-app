@@ -16,9 +16,11 @@ jobs:
           dotnet list ./test/ToDoApp.Web.Tests package --format json
           dotnet list ./test/ToDoApp.Web.Tests package --format json | jq -c '.projects'
           echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package --format json |
-            jq -c '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')"
+            jq -c '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))' |
+            sha256sum)"
           echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package --format json |
-            jq -c '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')" >> $GITHUB_OUTPUT
+            jq -c '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))' |
+            sha256sum)" >> $GITHUB_OUTPUT
       - name: Cache Docker images.
         uses: ScribeMD/docker-cache@0.3.5
         with:
