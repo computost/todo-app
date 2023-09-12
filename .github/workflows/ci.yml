@@ -12,9 +12,9 @@ jobs:
       - name: Get Cache Key
         id: get-cache-key
         run: |
-          echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package |
+          echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package --format json |
             jq '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')"
-          echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package |
+          echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package --format json |
             jq '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')" >> $GITHUB_OUTPUT
       - name: Cache Docker images.
         uses: ScribeMD/docker-cache@0.3.5
