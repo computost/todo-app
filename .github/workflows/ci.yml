@@ -12,6 +12,8 @@ jobs:
       - name: Get Cache Key
         id: get-cache-key
         run: |
+          dotnet list ./test/ToDoApp.Web.Tests package --format json
+          dotnet list ./test/ToDoApp.Web.Tests package --format json | jq '.projects'
           echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package --format json |
             jq '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')"
           echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package --format json |
