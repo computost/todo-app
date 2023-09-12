@@ -9,4 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Get Cache Key
+        id: get-cache-key
+        run: |
+          echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package |
+            jq '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')"
+          echo "cache-key=$(dotnet list ./test/ToDoApp.Web.Tests package |
+            jq '.projects[] | .frameworks[] | .topLevelPackages[] | select(.id | startswith("Testcontainers"))')" >> $GITHUB_OUTPUT
+      - name: Cache Docker images.
+        uses: ScribeMD/docker-cache@0.3.5
+        with:
+          key: ${{ steps.get-cache-key.outputs.cache-key }}
       - run: dotnet test
