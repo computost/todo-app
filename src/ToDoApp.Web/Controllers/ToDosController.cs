@@ -28,4 +28,14 @@ public class ToDosController : ControllerBase
         int id,
         CancellationToken cancellationToken
     ) => Ok(await _toDoService.Complete(id, cancellationToken));
+    
+    [HttpDelete, Route("{id}")]
+    public async Task<IActionResult> Delete(
+        int id,
+        CancellationToken cancellationToken
+    )
+    {
+        await _toDoService.Delete(id, cancellationToken);
+        return NoContent();
+    }
 }

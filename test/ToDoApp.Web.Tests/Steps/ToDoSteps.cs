@@ -51,12 +51,18 @@ public class ToDoSteps : IAsyncLifetime
 
     protected async Task WhenRequestingToCompleteTheToDo() =>
         _theResponse = await _client.PostAsync($"todos/{_toDoId}/complete", null);
+    
+    protected async Task WhenRequestingToDeleteTheToDo() =>
+        _theResponse = await _client.DeleteAsync($"todos/{_toDoId}");
 
     protected void ThenTheResponseShouldBe201Created() =>
         _theResponse.Should().Be201Created();
 
     protected void ThenTheResponseShouldBe200Ok() =>
         _theResponse.Should().Be200Ok();
+    
+    protected void ThenTheResponseShouldBe204NoContent() =>
+        _theResponse.Should().Be204NoContent();
 
     protected void AndTheToDoResponseIsStoredInTheDatabase()
     {
@@ -64,6 +70,12 @@ public class ToDoSteps : IAsyncLifetime
         _theResponse.Should().Satisfy<ToDo>(theToDo =>
             _databaseFixture.ToDosContext.ToDos.Should().ContainEquivalentOf(theToDo)
         );
+    }
+    
+    protected void AndTheToDoResponseIsNotStoredInTheDatabase()
+    {
+        _databaseFixture.ToDosContext.ChangeTracker.Clear();
+        _databaseFixture.ToDosContext.ToDos.Should().NotContain(theToDo => theToDo.Id == _toDoId);
     }
 
     protected void AndTheToDoResponseShouldHaveName(string name) =>

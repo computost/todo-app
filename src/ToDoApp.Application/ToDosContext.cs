@@ -9,4 +9,9 @@ public class ToDosContext : DbContext
     {
 
     }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Domain.Entities.ToDo>().Ignore(_ => _.IsDeleted);
+        base.OnModelCreating(modelBuilder);
+    }
 }
