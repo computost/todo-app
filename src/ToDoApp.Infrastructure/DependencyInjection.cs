@@ -8,7 +8,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services)
     {
-        services.AddDbContext<ToDosContext>(options =>
+        services.AddDbContext<ToDosContext, ToDosContextImpl>(options =>
             options.UseSqlServer("name=ConnectionStrings::Sql")
         );
         return services;

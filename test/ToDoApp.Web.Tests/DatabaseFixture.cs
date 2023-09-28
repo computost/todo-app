@@ -1,20 +1,20 @@
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Testcontainers.MsSql;
 using ToDoApp.Application;
+using ToDoApp.Infrastructure;
 
 namespace ToDoApp.Web.Tests;
 
 public class DatabaseFixture : IAsyncLifetime
 {
     public MsSqlContainer MsSqlContainer { get; } = new MsSqlBuilder().Build();
-    public ToDosContext ToDosContext { get; private set; }
+    public ToDosContext ToDosContext { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
         await MsSqlContainer.StartAsync();
-        ToDosContext = new ToDosContext(
-            new DbContextOptionsBuilder<ToDosContext>()
+        ToDosContext = new ToDosContextImpl(
+            new DbContextOptionsBuilder<ToDosContextImpl>()
                 .UseSqlServer(MsSqlContainer.GetConnectionString())
                 .Options
         );
