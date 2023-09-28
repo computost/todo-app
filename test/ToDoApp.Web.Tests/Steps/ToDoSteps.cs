@@ -35,32 +35,45 @@ public class ToDoSteps : IAsyncLifetime
 
     #endregion
 
-    private int? _toDoId;
+    private int? _theToDoId;
     private HttpResponseMessage? _theResponse;
 
-    protected async Task GivenAToDoInTheDatabase()
+    #region Given
+
+    protected async Task GivenAToDoInTheDatabase(string name = "")
     {
-        var toDo = new Domain.Entities.ToDo(string.Empty);
+        var toDo = new Domain.Entities.ToDo(name);
         await _databaseFixture.ToDosContext.ToDos.AddAsync(toDo);
         await _databaseFixture.ToDosContext.SaveChangesAsync();
-        _toDoId = toDo.Id;
+        _theToDoId = toDo.Id;
     }
+
+    #endregion
+
+    #region When
 
     protected async Task WhenRequestingToCreateAToDoWithName(string name) =>
         _theResponse = await _client.PostAsJsonAsync("todos", name);
 
     protected async Task WhenRequestingToCompleteTheToDo() =>
-        _theResponse = await _client.PostAsync($"todos/{_toDoId}/complete", null);
-    
+        _theResponse = await _client.PostAsync($"todos/{_theToDoId}/complete", null);
+
     protected async Task WhenRequestingToDeleteTheToDo() =>
-        _theResponse = await _client.DeleteAsync($"todos/{_toDoId}");
+        _theResponse = await _client.DeleteAsync($"todos/{_theToDoId}");
+
+    protected async Task WhenFetchingTheToDo() =>
+        _theResponse = await _client.GetAsync($"todos/{_theToDoId}");
+
+    #endregion
+
+    #region Then
 
     protected void ThenTheResponseShouldBe201Created() =>
         _theResponse.Should().Be201Created();
 
     protected void ThenTheResponseShouldBe200Ok() =>
         _theResponse.Should().Be200Ok();
-    
+
     protected void ThenTheResponseShouldBe204NoContent() =>
         _theResponse.Should().Be204NoContent();
 
@@ -71,11 +84,11 @@ public class ToDoSteps : IAsyncLifetime
             _databaseFixture.ToDosContext.ToDos.Should().ContainEquivalentOf(theToDo)
         );
     }
-    
+
     protected void AndTheToDoResponseIsNotStoredInTheDatabase()
     {
         _databaseFixture.ToDosContext.ChangeTracker.Clear();
-        _databaseFixture.ToDosContext.ToDos.Should().NotContain(theToDo => theToDo.Id == _toDoId);
+        _databaseFixture.ToDosContext.ToDos.Should().NotContain(theToDo => theToDo.Id == _theToDoId);
     }
 
     protected void AndTheToDoResponseShouldHaveName(string name) =>
@@ -92,4 +105,6 @@ public class ToDoSteps : IAsyncLifetime
         _theResponse.Should().Satisfy<ToDo>(theToDo =>
             theToDo.Should().BeEquivalentTo(new { IsDone = false })
         );
+
+    #endregion
 }

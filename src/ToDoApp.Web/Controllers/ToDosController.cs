@@ -28,7 +28,7 @@ public class ToDosController : ControllerBase
         int id,
         CancellationToken cancellationToken
     ) => Ok(await _toDoService.Complete(id, cancellationToken));
-    
+
     [HttpDelete, Route("{id}")]
     public async Task<IActionResult> Delete(
         int id,
@@ -37,5 +37,14 @@ public class ToDosController : ControllerBase
     {
         await _toDoService.Delete(id, cancellationToken);
         return NoContent();
+    }
+
+    [HttpGet, Route("{id}")]
+    public async Task<IActionResult> Get(
+        int id,
+        CancellationToken cancellationToken
+    )
+    {
+        throw new NotImplementedException();
     }
 }

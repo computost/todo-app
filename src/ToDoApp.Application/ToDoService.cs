@@ -35,6 +35,7 @@ public class ToDoService
         var toDo = await _toDosContext.ToDos.FindAsync(id, cancellationToken);
 
         toDo.Delete();
+
         await _toDosContext.SaveChangesAsync(cancellationToken);
     }
 }

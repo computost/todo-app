@@ -9,7 +9,7 @@ public class MarkToDoComplete : ToDoSteps, IClassFixture<DatabaseFixture>
     }
 
     [Fact]
-    public async Task ToDoIsIncomplete()
+    public async Task IncompleteToDo()
     {
         await GivenAToDoInTheDatabase();
         await WhenRequestingToCompleteTheToDo();

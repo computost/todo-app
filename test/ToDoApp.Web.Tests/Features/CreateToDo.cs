@@ -9,7 +9,7 @@ public class CreateToDo : ToDoSteps, IClassFixture<DatabaseFixture>
     [Theory]
     [InlineData("Make an app")]
     [InlineData("Test the app")]
-    public async Task WithName(string name)
+    public async Task ValidName(string name)
     {
         await WhenRequestingToCreateAToDoWithName(name);
         ThenTheResponseShouldBe201Created();
