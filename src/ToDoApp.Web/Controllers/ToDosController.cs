@@ -43,8 +43,5 @@ public class ToDosController : ControllerBase
     public async Task<IActionResult> Get(
         int id,
         CancellationToken cancellationToken
-    )
-    {
-        throw new NotImplementedException();
-    }
+    ) => Ok(await _toDoService.Get(id, cancellationToken));
 }
