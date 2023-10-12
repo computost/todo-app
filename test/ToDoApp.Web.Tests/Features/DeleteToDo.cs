@@ -14,4 +14,11 @@ public class DeleteToDo : ToDoSteps, IClassFixture<DatabaseFixture>
         ThenTheResponseShouldBe204NoContent();
         AndTheToDoResponseIsNotStoredInTheDatabase();
     }
+
+    [Fact]
+    public async Task NonExistingToDo()
+    {
+        await WhenRequestingToDeleteTheToDo();
+        ThenTheResponseShouldBe404NotFound();
+    }
 }

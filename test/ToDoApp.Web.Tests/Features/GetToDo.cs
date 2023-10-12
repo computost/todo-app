@@ -14,4 +14,11 @@ public class GetToDo : ToDoSteps, IClassFixture<DatabaseFixture>
         ThenTheResponseShouldBe200Ok();
         AndTheToDoResponseShouldHaveName("Make an app");
     }
+
+    [Fact]
+    public async Task NonExistingToDo()
+    {
+        await WhenFetchingTheToDo();
+        ThenTheResponseShouldBe404NotFound();
+    }
 }

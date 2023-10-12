@@ -1,5 +1,7 @@
+using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 using ToDoApp.Application;
+using ToDoApp.Application.Errors;
 
 namespace ToDoApp.Web.Controllers;
 
@@ -29,9 +31,9 @@ public class ToDosController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        var todo = await _toDoService.Complete(id, cancellationToken);
-        if (todo is null) return NotFound();
-        return Ok(todo);
+        var result = await _toDoService.Complete(id, cancellationToken);
+        if (result.HasError<NotFoundError>()) return NotFound();
+        return Ok(result.Value);
     }
 
     [HttpDelete, Route("{id}")]
@@ -40,7 +42,8 @@ public class ToDosController : ControllerBase
         CancellationToken cancellationToken
     )
     {
-        await _toDoService.Delete(id, cancellationToken);
+        var result = await _toDoService.Delete(id, cancellationToken);
+        if (result.HasError<NotFoundError>()) return NotFound();
         return NoContent();
     }
 
@@ -48,5 +51,10 @@ public class ToDosController : ControllerBase
     public async Task<IActionResult> Get(
         int id,
         CancellationToken cancellationToken
-    ) => Ok(await _toDoService.Get(id, cancellationToken));
+    )
+    {
+        var result = await _toDoService.Get(id, cancellationToken);
+        if (result.HasError<NotFoundError>()) return NotFound();
+        return Ok(result.Value);
+    }
 }

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using FluentResults;
 using Microsoft.EntityFrameworkCore;
+using ToDoApp.Application.Errors;
 
 namespace ToDoApp.Application;
 
@@ -24,26 +26,33 @@ public class ToDoService
         return _mapper.Map<ToDo>(toDo);
     }
 
-    public async Task<ToDo?> Complete(int id, CancellationToken cancellationToken)
+    public async Task<Result<ToDo>> Complete(int id, CancellationToken cancellationToken)
     {
         var toDo = await _toDosContext.ToDos.FindAsync(id, cancellationToken);
 
-        if (toDo is null) return null;
+        if (toDo is null) return Result.Fail(new NotFoundError());
         toDo.Complete();
         await _toDosContext.SaveChangesAsync(cancellationToken);
         return _mapper.Map<ToDo>(toDo);
     }
 
-    public async Task Delete(int id, CancellationToken cancellationToken)
+    public async Task<Result> Delete(int id, CancellationToken cancellationToken)
     {
         var toDo = await _toDosContext.ToDos.FindAsync(id, cancellationToken);
 
+        if (toDo is null) return Result.Fail(new NotFoundError());
         toDo.Delete();
 
         await _toDosContext.SaveChangesAsync(cancellationToken);
+        return Result.Ok();
     }
 
-    public Task<ToDo> Get(int id, CancellationToken cancellationToken)
-        => _mapper.ProjectTo<ToDo>(_toDosContext.ToDos)
-            .FirstAsync(toDo => toDo.Id == id, cancellationToken);
+    public async Task<Result<ToDo>> Get(int id, CancellationToken cancellationToken)
+    {
+        var todo = await _mapper.ProjectTo<ToDo>(_toDosContext.ToDos)
+            .FirstOrDefaultAsync(toDo => toDo.Id == id, cancellationToken);
+        
+        if(todo is null) return Result.Fail(new NotFoundError());
+        return todo;
+    }
 }
