@@ -24,12 +24,12 @@ public class ToDoService
         return _mapper.Map<ToDo>(toDo);
     }
 
-    public async Task<ToDo> Complete(int id, CancellationToken cancellationToken)
+    public async Task<ToDo?> Complete(int id, CancellationToken cancellationToken)
     {
         var toDo = await _toDosContext.ToDos.FindAsync(id, cancellationToken);
 
+        if (toDo is null) return null;
         toDo.Complete();
-
         await _toDosContext.SaveChangesAsync(cancellationToken);
         return _mapper.Map<ToDo>(toDo);
     }

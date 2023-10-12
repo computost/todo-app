@@ -9,7 +9,7 @@ public class ToDo
         IsDeleted = false;
     }
 
-    public int? Id { get; private set; }
+    public int Id { get; private set; }
     public string Name { get; private set; }
     public bool IsDone { get; private set; }
     public bool IsDeleted { get; private set; }

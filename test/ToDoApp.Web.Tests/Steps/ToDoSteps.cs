@@ -35,7 +35,7 @@ public class ToDoSteps : IAsyncLifetime
 
     #endregion
 
-    private int? _theToDoId;
+    private int _theToDoId;
     private HttpResponseMessage? _theResponse;
 
     #region Given
@@ -76,6 +76,9 @@ public class ToDoSteps : IAsyncLifetime
 
     protected void ThenTheResponseShouldBe204NoContent() =>
         _theResponse.Should().Be204NoContent();
+
+    protected void ThenTheResponseShouldBe404NotFound() =>
+        _theResponse.Should().Be404NotFound();
 
     protected void AndTheToDoResponseIsStoredInTheDatabase()
     {

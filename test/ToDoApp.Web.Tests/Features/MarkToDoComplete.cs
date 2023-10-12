@@ -17,7 +17,13 @@ public class MarkToDoComplete : ToDoSteps, IClassFixture<DatabaseFixture>
         AndTheToDoResponseIsStoredInTheDatabase();
         AndTheToDoResponseShouldBeDone();
     }
-
-    // TODO ToDoIsNotInTheDatabase
+    
+    [Fact]
+    public async Task ToDoIsNotInTheDatabase()
+    {
+        await WhenRequestingToCompleteTheToDo();
+        ThenTheResponseShouldBe404NotFound();
+    }
+    
     // TODO ToDoIsComplete
 }
